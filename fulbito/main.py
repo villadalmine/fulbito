@@ -3,6 +3,8 @@ import os
 import requests
 import sys
 import json
+from urllib.request import urlopen
+from pprint import pprint
 
 BASE_URL = 'http://apiclient.resultados-futbol.com/scripts/api/api.php?key='
 
@@ -86,6 +88,7 @@ def _get(url):
         raise APIErrorException('You have exceeded your allowed requests per minute/day')
 
     click.secho(req, fg="green")
+    return req
     #resp = json.loads(u.read().decode('utf-8'))
     #for num in range(1,23):
        # a=resp["table"][num]["team"]
@@ -97,15 +100,39 @@ def get_team_position(team):
     """Queries the API and gets the standings for a particular league"""
     team_id=_get_team_id(team)
     team_lg=_get_team_league(team)
-    click.secho("No position availble for team." + str(team_id) + str(team_lg),
-                    fg="red", bold=True)
+    team_name=get_team_name(team)
+    """Do not forget to check if teamd id and lg are null"""
+    """Do not forget get date, timezone"""
+               #req = _get('soccerseasons/{id}/fixtures?timeFrame={time_frame}{time}'.format(
+                # id=league_id, time_frame=time_frame, time=str(time)))
+    url=("&tz=America/Buenos_Aires&format=json&lang=es&clang=es&code=ar&req=tables&league="+str(team_lg)+"&group=all&country=ar&year=2017")
+    req = _get(url)
+    position_table = req.json()
+    """Change the 22 index reading the table"""
+    for num in range(0,22):
+        equipo=position_table["table"][num]["team"]
+        position=position_table["table"][num]["pos"]
+        if equipo == team_name:
+            click.secho(equipo + " Posicion:" + position, fg="green")
 
+    #click.secho("No position availble for team."  + url  + str(team_id) + str(team_lg),
+            #        fg="red", bold=True)
+
+def get_team_name(code):
+    """Take in team ID, read JSON file to map ID to name"""
+    for team in TEAM_DATA:
+        if team["code"] == code:
+            return team["name"]
+            break
+    else:
+        click.secho("No team found for this code", fg="red", bold=True)
 
 def map_team_id(code):
     """Take in team ID, read JSON file to map ID to name"""
     for team in TEAM_DATA:
         if team["code"] == code:
             click.secho(team["name"], fg="green")
+            return team["name"]
             break
     else:
         click.secho("No team found for this code", fg="red", bold=True)
