@@ -108,8 +108,9 @@ def get_team_position(team):
     url=("&tz=America/Buenos_Aires&format=json&lang=es&clang=es&code=ar&req=tables&league="+str(team_lg)+"&group=all&country=ar&year=2017")
     req = _get(url)
     position_table = req.json()
+    count = len(position_table['table']) -1
     """Change the 22 index reading the table"""
-    for num in range(0,22):
+    for num in range(0,count):
         equipo=position_table["table"][num]["team"]
         position=position_table["table"][num]["pos"]
         if equipo == team_name:
