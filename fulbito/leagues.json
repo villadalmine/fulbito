@@ -1,0 +1,30 @@
+{  
+      "Argentina":{
+		"Primera":{ 
+			"id":"675",
+			"league_id":"33424"
+		},
+		"Nacional":{
+			"id":"192",
+			"league_id":"33440"
+		}
+	},
+      "Chile": {
+		"Primera":{
+			"id":"49",
+			"league_id":"36658"
+		}
+	},
+      "Uruguay": {
+		"Primera":{
+			"id":"46",
+			"league_id":"37744"
+		}
+	},
+      "Venezuela": {
+		"Primera":{
+			"id":"113",
+			"league_id":"37746"
+		}
+	}
+}
