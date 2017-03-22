@@ -5,8 +5,6 @@ import sys
 import json
 
 BASE_URL = 'http://apiclient.resultados-futbol.com/scripts/api/api.php?key='
-#LIVE_URL = 'http://soccer-cli.appspot.com/'
-#LEAGUE_IDS = leagueids.LEAGUE_IDS
 
 
 def load_json(file):
@@ -95,9 +93,11 @@ def _get(url):
        # if a == "Villa Dálmine":
        	#    click.secho(a + " Posicion:" + b, fg="green")
 
-def get_team_posi(team):
+def get_team_position(team):
     """Queries the API and gets the standings for a particular league"""
-    click.secho("No position availble for team",
+    team_id=_get_team_id(team)
+    team_lg=_get_team_league(team)
+    click.secho("No position availble for team." + str(team_id) + str(team_lg),
                     fg="red", bold=True)
 
 
@@ -110,7 +110,24 @@ def map_team_id(code):
     else:
         click.secho("No team found for this code", fg="red", bold=True)
 
+def _get_team_id(code):
+    """Get team id from json"""
+    for team in TEAM_DATA:
+        if team["code"] == code:
+            return team["id"]
+            break
+    else:
+        return null
 
+
+def _get_team_league(code):
+    """Get team id from json"""
+    for team in TEAM_DATA:
+        if team["code"] == code:
+            return team["league"]["id"]
+            break
+    else:
+        return null
 
 
 def list_team_codes():
@@ -157,9 +174,9 @@ def main(listcodes, lookup, team, posi, apikey):
             if lookup:
                 map_team_id(team)
                 return
-        if posi:
-                get_team_posi(team)
-                return 
+            else:
+                get_team_position(team)
+                return
 
     except IncorrectParametersException as e:
         click.secho(e.message, fg="red", bold=True)
